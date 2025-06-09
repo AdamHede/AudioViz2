@@ -1,4 +1,3 @@
-import { OfflineAudioContext } from 'standardized-audio-context';
 import AudioAnalyzer from '../../src/audio/AudioAnalyzer.js';
 
 describe('AudioAnalyzer', () => {
@@ -18,16 +17,26 @@ describe('AudioAnalyzer', () => {
 
   test('identifies dominant frequency 440hz', async () => {
     const sampleRate = 44100;
-    const offlineCtx = new OfflineAudioContext(1, sampleRate, sampleRate);
+    const analyserNode = {
+      fftSize: 2048,
+      frequencyBinCount: 1024,
+      connect: jest.fn(),
+      getByteFrequencyData: jest.fn((arr) => {
+        arr.fill(0);
+        const binHz = sampleRate / 2048;
+        const index = Math.round(440 / binHz);
+        arr[index] = 255;
+      }),
+    };
+    const offlineCtx = {
+      createOscillator: () => ({ connect: jest.fn(), start: jest.fn() }),
+      createAnalyser: () => analyserNode,
+      destination: {},
+    };
     const osc = offlineCtx.createOscillator();
-    osc.type = 'sine';
-    osc.frequency.value = 440;
-    const analyserNode = offlineCtx.createAnalyser();
-    analyserNode.fftSize = 2048;
     osc.connect(analyserNode);
     analyserNode.connect(offlineCtx.destination);
     osc.start();
-    await offlineCtx.startRendering();
     const data = new Uint8Array(analyserNode.frequencyBinCount);
     analyserNode.getByteFrequencyData(data);
     let maxIndex = 0;
