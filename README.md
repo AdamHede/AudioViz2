@@ -1,2 +1,7 @@
 # AudioViz2
-A second attempt at creating a DMX visualization application
+
+Clone and run:
+
+```bash
+git clone <repo-url> && cd AudioViz2 && npm i && npm run dev
+```
