@@ -16,3 +16,18 @@ git clone <repo-url> && cd AudioViz2 && npm i && npm run dev
   ui/                # user interface elements
   main.js            # application entry point
 ```
+
+## Running Tests
+
+First install dev dependencies:
+
+```bash
+npm install
+```
+
+Run the test suite with:
+
+```bash
+npm test
+npx jest --coverage
+```
