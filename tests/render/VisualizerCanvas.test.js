@@ -8,6 +8,7 @@ describe('VisualizerCanvas', () => {
   test('drawFrame runs without errors', () => {
     const canvas = document.getElementById('c');
     const vis = new VisualizerCanvas(canvas, 2);
-    expect(() => vis.drawFrame([0.5, 1])).not.toThrow();
+    const settings = { colorMode: 'Rainbow', intensity: 1, smoothing: 0.2, strobe: false };
+    expect(() => vis.drawFrame([0.5, 1], settings)).not.toThrow();
   });
 });
