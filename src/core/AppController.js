@@ -24,7 +24,7 @@ export default class AppController {
     this.controls.bindPlay(() => {
       this.player.play();
       if (!this.visualizer.animationId) {
-        this.visualizer.start(() => this.analyzer.getFrequencyBuckets());
+        this.visualizer.start(() => this.analyzer.getSmoothedBands());
       }
     });
     this.controls.bindStop(() => {

@@ -14,7 +14,7 @@ export default class VisualizerCanvas {
     this.ctx.clearRect(0, 0, width, height);
     const barWidth = width / this.numBars;
     for (let i = 0; i < this.numBars; i++) {
-      const magnitude = buckets[i] / 255;
+      const magnitude = buckets[i];
       const barHeight = magnitude * height;
       this.ctx.fillStyle = `hsl(${i * 40}, 100%, ${50 + magnitude * 50}%)`;
       this.ctx.fillRect(i * barWidth, height - barHeight, barWidth - 2, barHeight);
