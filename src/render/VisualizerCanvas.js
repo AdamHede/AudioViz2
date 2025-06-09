@@ -4,6 +4,8 @@ export default class VisualizerCanvas {
     this.ctx = canvas.getContext('2d');
     this.numBars = numBars;
     this.animationId = null;
+    this.flashActive = false;
+    this.strobeEnabled = true;
   }
 
   drawFrame(buckets) {
@@ -19,11 +21,18 @@ export default class VisualizerCanvas {
       this.ctx.fillStyle = `hsl(${i * 40}, 100%, ${50 + magnitude * 50}%)`;
       this.ctx.fillRect(i * barWidth, height - barHeight, barWidth - 2, barHeight);
     }
+    if (this.flashActive) {
+      this.ctx.fillStyle = 'rgba(255,255,255,0.7)';
+      this.ctx.fillRect(0, 0, width, height);
+      this.flashActive = false;
+    }
   }
 
-  start(drawFn) {
+  start(drawFn, onFrame) {
     const loop = () => {
-      this.drawFrame(drawFn());
+      const buckets = drawFn();
+      if (onFrame) onFrame(buckets);
+      this.drawFrame(buckets);
       this.animationId = requestAnimationFrame(loop);
     };
     loop();
@@ -33,5 +42,17 @@ export default class VisualizerCanvas {
     cancelAnimationFrame(this.animationId);
     this.animationId = null;
     this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+  }
+
+  /** Enable or disable strobe flashes */
+  setStrobe(enabled) {
+    this.strobeEnabled = enabled;
+  }
+
+  /** Trigger a flash overlay on next frame */
+  triggerFlash() {
+    if (this.strobeEnabled) {
+      this.flashActive = true;
+    }
   }
 }

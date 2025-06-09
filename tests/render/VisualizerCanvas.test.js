@@ -10,4 +10,13 @@ describe('VisualizerCanvas', () => {
     const vis = new VisualizerCanvas(canvas, 2);
     expect(() => vis.drawFrame([0.5, 1])).not.toThrow();
   });
+
+  test('triggerFlash sets flag and clears after draw', () => {
+    const canvas = document.getElementById('c');
+    const vis = new VisualizerCanvas(canvas, 2);
+    vis.triggerFlash();
+    expect(vis.flashActive).toBe(true);
+    vis.drawFrame([0, 0]);
+    expect(vis.flashActive).toBe(false);
+  });
 });

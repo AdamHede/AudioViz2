@@ -1,8 +1,9 @@
 export default class Controls {
-  constructor(fileInput, playBtn, stopBtn) {
+  constructor(fileInput, playBtn, stopBtn, strobeToggle) {
     this.fileInput = fileInput;
     this.playBtn = playBtn;
     this.stopBtn = stopBtn;
+    this.strobeToggle = strobeToggle;
   }
 
   bindLoad(handler) {
@@ -18,6 +19,13 @@ export default class Controls {
 
   bindStop(handler) {
     this.stopBtn.addEventListener('click', handler);
+  }
+
+  bindStrobeChange(handler) {
+    if (this.strobeToggle) {
+      this.strobeToggle.addEventListener('change', e => handler(e.target.checked));
+      handler(this.strobeToggle.checked);
+    }
   }
 
   enable() {
