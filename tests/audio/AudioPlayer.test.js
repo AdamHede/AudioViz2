@@ -14,6 +14,8 @@ describe('AudioPlayer', () => {
 
     global.Audio = jest.fn(() => mockAudio);
 
+    global.URL.createObjectURL = jest.fn(() => 'blob:mock');
+
     mockCtx = {
       createMediaElementSource: jest.fn(() => ({ connect: jest.fn() })),
       state: 'running',
@@ -21,6 +23,10 @@ describe('AudioPlayer', () => {
     };
     global.AudioContext = jest.fn(() => mockCtx);
     player = new AudioPlayer();
+  });
+
+  afterEach(() => {
+    delete global.URL.createObjectURL;
   });
 
   test('loads only audio files', () => {
