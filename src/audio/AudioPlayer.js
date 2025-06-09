@@ -6,6 +6,9 @@ export default class AudioPlayer {
   }
 
   load(file) {
+    if (!file.type.startsWith('audio/')) {
+      throw new Error('Invalid audio file');
+    }
     if (this.audio) {
       this.audio.pause();
     }
