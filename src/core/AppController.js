@@ -17,7 +17,8 @@ export default class AppController {
   bindEvents() {
     this.controls.bindLoad(file => {
       this.player.load(file);
-      this.player.connect(this.analyzer.analyser);
+      // Connect the player's source through the analyzer to the speakers
+      this.analyzer.connect(this.player.source);
       this.controls.enable();
     });
     this.controls.bindPlay(() => {
