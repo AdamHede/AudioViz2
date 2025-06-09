@@ -22,6 +22,7 @@ describe('AudioPlayer', () => {
       resume: jest.fn(),
     };
     global.AudioContext = jest.fn(() => mockCtx);
+    global.URL.createObjectURL = jest.fn(() => 'blob:mock');
     player = new AudioPlayer();
   });
 
