@@ -12,6 +12,24 @@
     <button id="playBtn" disabled>Play</button>
     <button id="stopBtn" disabled>Stop</button>
   </div>
+  <div id="settingsPanel">
+    <label>Color Mode
+      <select id="colorMode">
+        <option value="Rainbow">Rainbow</option>
+        <option value="Bass">Bass-colored</option>
+        <option value="White">Fixed White</option>
+      </select>
+    </label>
+    <label>Intensity
+      <input type="range" id="intensity" min="0.5" max="2" step="0.1" value="1" />
+    </label>
+    <label>Smoothing
+      <input type="range" id="smoothing" min="0" max="1" step="0.05" value="0.2" />
+    </label>
+    <label>
+      <input type="checkbox" id="strobe" /> Strobe on Beat
+    </label>
+  </div>
   <canvas id="canvas"></canvas>
   <script type="module" src="/src/main.js"></script>
 </body>
