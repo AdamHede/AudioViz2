@@ -20,6 +20,7 @@
     "jest-canvas-mock": "^2.5.2",
     "jest-environment-jsdom": "^30.0.0-beta.3",
     "standardized-audio-context": "^25.3.77",
-    "vite": "^6.3.5"
+    "vite": "^6.3.5",
+    "web-audio-test-api": "^0.5.2"
   }
 }
