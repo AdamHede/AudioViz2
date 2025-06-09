@@ -3,11 +3,19 @@ import AudioAnalyzer from '../audio/AudioAnalyzer.js';
 import VisualizerCanvas from '../render/VisualizerCanvas.js';
 import SceneConfig from '../render/SceneConfig.js';
 import Controls from '../ui/Controls.js';
+import SettingsPanel from '../ui/SettingsPanel.js';
 
 export default class AppController {
   constructor(elements) {
-    const { fileInput, playBtn, stopBtn, canvas } = elements;
+    const { fileInput, playBtn, stopBtn, canvas, settingsPanel } = elements;
     this.controls = new Controls(fileInput, playBtn, stopBtn);
+    this.settings = {
+      colorMode: 'Rainbow',
+      intensity: 1,
+      smoothing: 0.2,
+      strobe: false,
+    };
+    new SettingsPanel(settingsPanel, this.settings);
     this.player = new AudioPlayer();
     this.analyzer = new AudioAnalyzer(this.player.audioCtx, SceneConfig.NUM_BARS);
     this.visualizer = new VisualizerCanvas(canvas, SceneConfig.NUM_BARS);
@@ -24,7 +32,7 @@ export default class AppController {
     this.controls.bindPlay(() => {
       this.player.play();
       if (!this.visualizer.animationId) {
-        this.visualizer.start(() => this.analyzer.getFrequencyBuckets());
+        this.visualizer.start(() => this.analyzer.getFrequencyBuckets(), this.settings);
       }
     });
     this.controls.bindStop(() => {
