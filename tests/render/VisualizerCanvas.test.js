@@ -8,6 +8,6 @@ describe('VisualizerCanvas', () => {
   test('drawFrame runs without errors', () => {
     const canvas = document.getElementById('c');
     const vis = new VisualizerCanvas(canvas, 2);
-    expect(() => vis.drawFrame([128, 255])).not.toThrow();
+    expect(() => vis.drawFrame([0.5, 1])).not.toThrow();
   });
 });

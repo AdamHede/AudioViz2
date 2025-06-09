@@ -13,6 +13,7 @@ describe('AudioPlayer', () => {
     };
 
     global.Audio = jest.fn(() => mockAudio);
+    global.URL.createObjectURL = jest.fn(() => 'blob:mock');
 
     global.URL.createObjectURL = jest.fn(() => 'blob:mock');
 
