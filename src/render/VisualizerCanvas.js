@@ -1,4 +1,5 @@
 import applySmoothing from './applySmoothing.js';
+import BeatDetector from '../audio/BeatDetector.js';
 
 export default class VisualizerCanvas {
   constructor(canvas, numBars) {
@@ -7,7 +8,7 @@ export default class VisualizerCanvas {
     this.numBars = numBars;
     this.animationId = null;
     this.prev = new Array(numBars).fill(0);
-    this.prevBeat = false;
+    this.beatDetector = new BeatDetector();
   }
 
   drawFrame(buckets, settings) {
@@ -17,8 +18,8 @@ export default class VisualizerCanvas {
     this.canvas.height = height;
     const { colorMode, intensity, smoothing, strobe } = settings;
 
-    const beat = buckets[0] > 0.8 && !this.prevBeat;
-    this.prevBeat = buckets[0] > 0.8;
+    const energy = buckets.reduce((s, v) => s + v, 0) / buckets.length;
+    const beat = this.beatDetector.update(energy);
 
     if (strobe && beat) {
       this.ctx.fillStyle = 'white';
