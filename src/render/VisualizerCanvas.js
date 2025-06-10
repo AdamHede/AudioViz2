@@ -47,8 +47,9 @@ export default class VisualizerCanvas {
     }
   }
 
-  start(drawFn, settings) {
+  start(drawFn, settings, fpsCounter = null) {
     const loop = () => {
+      if (fpsCounter) fpsCounter.tick();
       this.drawFrame(drawFn(), settings);
       this.animationId = requestAnimationFrame(loop);
     };

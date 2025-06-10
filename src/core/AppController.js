@@ -4,10 +4,11 @@ import VisualizerCanvas from '../render/VisualizerCanvas.js';
 import SceneConfig from '../render/SceneConfig.js';
 import Controls from '../ui/Controls.js';
 import SettingsPanel from '../ui/SettingsPanel.js';
+import FpsCounter from '../ui/FpsCounter.js';
 
 export default class AppController {
   constructor(elements) {
-    const { fileInput, playBtn, stopBtn, canvas, settingsPanel } = elements;
+    const { fileInput, playBtn, stopBtn, canvas, settingsPanel, fpsDisplay } = elements;
     this.controls = new Controls(fileInput, playBtn, stopBtn);
     this.settings = {
       colorMode: 'Rainbow',
@@ -19,6 +20,7 @@ export default class AppController {
     this.player = new AudioPlayer();
     this.analyzer = new AudioAnalyzer(this.player.audioCtx, SceneConfig.NUM_BARS);
     this.visualizer = new VisualizerCanvas(canvas, SceneConfig.NUM_BARS);
+    this.fpsCounter = new FpsCounter(fpsDisplay);
     this.bindEvents();
   }
 
@@ -32,12 +34,18 @@ export default class AppController {
     this.controls.bindPlay(() => {
       this.player.play();
       if (!this.visualizer.animationId) {
-        this.visualizer.start(() => this.analyzer.getFrequencyBuckets(), this.settings);
+        this.fpsCounter.reset();
+        this.visualizer.start(
+          () => this.analyzer.getFrequencyBuckets(),
+          this.settings,
+          this.fpsCounter
+        );
       }
     });
     this.controls.bindStop(() => {
       this.player.stop();
       this.visualizer.stop();
+      this.fpsCounter.reset();
     });
   }
 }
