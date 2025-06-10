@@ -10,7 +10,7 @@ export default class SettingsPanel {
     this.colorMode = this.container.querySelector('#colorMode');
     this.intensity = this.container.querySelector('#intensity');
     this.smoothing = this.container.querySelector('#smoothing');
-    this.strobe = this.container.querySelector('#strobe');
+    this.strobe = this.container.querySelector('#strobeToggle');
 
     const update = () => {
       this.settings.colorMode = this.colorMode.value;

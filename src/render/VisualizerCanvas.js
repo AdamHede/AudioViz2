@@ -7,21 +7,17 @@ export default class VisualizerCanvas {
     this.numBars = numBars;
     this.animationId = null;
     this.prev = new Array(numBars).fill(0);
-    this.prevBeat = false;
   }
 
-  drawFrame(buckets, settings) {
+  drawFrame(buckets, settings, beat = false) {
     const width = this.canvas.clientWidth;
     const height = this.canvas.clientHeight;
     this.canvas.width = width;
     this.canvas.height = height;
     const { colorMode, intensity, smoothing, strobe } = settings;
 
-    const beat = buckets[0] > 0.8 && !this.prevBeat;
-    this.prevBeat = buckets[0] > 0.8;
-
     if (strobe && beat) {
-      this.ctx.fillStyle = 'white';
+      this.ctx.fillStyle = 'rgba(255,255,255,0.8)';
       this.ctx.fillRect(0, 0, width, height);
       return;
     }
@@ -46,9 +42,11 @@ export default class VisualizerCanvas {
     }
   }
 
-  start(drawFn, settings) {
+  start(drawFn, settings, onFrame) {
     const loop = () => {
-      this.drawFrame(drawFn(), settings);
+      const buckets = drawFn();
+      const beat = onFrame ? onFrame(buckets) : false;
+      this.drawFrame(buckets, settings, beat);
       this.animationId = requestAnimationFrame(loop);
     };
     loop();

@@ -9,6 +9,6 @@ describe('VisualizerCanvas', () => {
     const canvas = document.getElementById('c');
     const vis = new VisualizerCanvas(canvas, 2);
     const settings = { colorMode: 'Rainbow', intensity: 1, smoothing: 0.2, strobe: false };
-    expect(() => vis.drawFrame([0.5, 1], settings)).not.toThrow();
+    expect(() => vis.drawFrame([0.5, 1], settings, false)).not.toThrow();
   });
 });
