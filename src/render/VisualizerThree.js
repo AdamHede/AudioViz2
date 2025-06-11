@@ -45,6 +45,7 @@ export default class VisualizerThree {
       const material = new THREE.MeshBasicMaterial({ color: 0xffffff });
       const mesh = new THREE.Mesh(geometry, material);
       mesh.position.x = (i - this.numBars / 2) * spacing;
+      mesh.visible = this.activeScene === 'bars';
       this.scene.add(mesh);
       this.bars.push(mesh);
     }
@@ -52,12 +53,15 @@ export default class VisualizerThree {
 
   /** Initialize tunnel ring meshes */
   initTunnel() {
+    const inner = 2.8; // inner radius for hexagon ring
+    const outer = 3; // outer radius for hexagon ring
     for (let i = 0; i < this.tunnelSegments; i++) {
-      const geometry = new THREE.TorusGeometry(3, 0.1, 8, 16);
-      const material = new THREE.MeshBasicMaterial({ color: 0xffffff });
+      const geometry = new THREE.RingGeometry(inner, outer, 6);
+      const material = new THREE.MeshBasicMaterial({ color: 0x00ffff, side: THREE.DoubleSide });
       const mesh = new THREE.Mesh(geometry, material);
       mesh.rotation.x = Math.PI / 2;
       mesh.position.z = -i * this.tunnelSpacing;
+      mesh.visible = this.activeScene === 'tunnel';
       this.scene.add(mesh);
       this.tunnelRings.push(mesh);
     }
@@ -85,6 +89,7 @@ export default class VisualizerThree {
       geometry.center();
       const material = new THREE.MeshPhongMaterial({ color: 0xffffff });
       this.textMesh = new THREE.Mesh(geometry, material);
+      this.textMesh.visible = this.activeScene === 'text';
       this.scene.add(this.textMesh);
     } else {
       this.pendingText = text;
@@ -112,6 +117,16 @@ export default class VisualizerThree {
       this.camera.position.z = 0;
     } else {
       this.camera.position.z = 5;
+    }
+    // Update visibility for scene objects
+    this.bars.forEach(bar => {
+      bar.visible = scene === 'bars';
+    });
+    this.tunnelRings.forEach(ring => {
+      ring.visible = scene === 'tunnel';
+    });
+    if (this.textMesh) {
+      this.textMesh.visible = scene === 'text';
     }
   }
 
@@ -144,17 +159,8 @@ export default class VisualizerThree {
     this.resize();
     const energy = buckets.reduce((s, v) => s + v, 0) / buckets.length;
     const scale = 1 + energy * settings.intensity;
-    this.hueOffset = (this.hueOffset + 0.5) % 360;
-    const loopDist = this.tunnelSegments * this.tunnelSpacing;
-    for (let i = 0; i < this.tunnelRings.length; i++) {
-      const ring = this.tunnelRings[i];
-      ring.position.z += this.tunnelSpeed;
-      if (ring.position.z > this.camera.position.z) {
-        ring.position.z -= loopDist;
-      }
+    for (const ring of this.tunnelRings) {
       ring.scale.setScalar(scale);
-      const hue = (this.hueOffset + (i / this.tunnelRings.length) * 360) % 360;
-      ring.material.color = new THREE.Color(`hsl(${hue}, 100%, 50%)`);
     }
     this.renderer.render(this.scene, this.camera);
   }
