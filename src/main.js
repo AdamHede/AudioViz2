@@ -5,6 +5,7 @@ window.addEventListener('DOMContentLoaded', () => {
     fileInput: document.getElementById('fileInput'),
     playBtn: document.getElementById('playBtn'),
     stopBtn: document.getElementById('stopBtn'),
+    downloadBtn: document.getElementById('downloadCue'),
     canvas: document.getElementById('canvas'),
     settingsPanel: document.getElementById('settingsPanel'),
     fpsDisplay: document.getElementById('fpsDisplay'),

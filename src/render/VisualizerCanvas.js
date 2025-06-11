@@ -1,5 +1,5 @@
-import applySmoothing from './applySmoothing.js';
-import BeatDetector from '../audio/BeatDetector.js';
+import { applySmoothing } from './applySmoothing.js';
+import { mapFftToVisuals } from './mapFftToVisuals.js';
 
 export default class VisualizerCanvas {
   constructor(canvas, numBars) {
@@ -8,21 +8,17 @@ export default class VisualizerCanvas {
     this.numBars = numBars;
     this.animationId = null;
     this.prev = new Array(numBars).fill(0);
-    this.beatDetector = new BeatDetector();
   }
 
-  drawFrame(buckets, settings) {
+  drawFrame(buckets, settings, beat = false) {
     const width = this.canvas.clientWidth;
     const height = this.canvas.clientHeight;
     this.canvas.width = width;
     this.canvas.height = height;
     const { colorMode, intensity, smoothing, strobe } = settings;
 
-    const energy = buckets.reduce((s, v) => s + v, 0) / buckets.length;
-    const beat = this.beatDetector.update(energy);
-
     if (strobe && beat) {
-      this.ctx.fillStyle = 'white';
+      this.ctx.fillStyle = 'rgba(255,255,255,0.8)';
       this.ctx.fillRect(0, 0, width, height);
       return;
     }
@@ -31,14 +27,10 @@ export default class VisualizerCanvas {
     const barWidth = width / this.numBars;
     for (let i = 0; i < this.numBars; i++) {
       const current = Math.min(buckets[i] * intensity, 1);
-      const mag = applySmoothing(this.prev[i], current, smoothing);
-      this.prev[i] = mag;
-      const barHeight = mag * height;
-
-      let fill = 'white';
-      if (colorMode === 'Rainbow') {
-        fill = `hsl(${i * 40}, 100%, ${50 + mag * 50}%)`;
-      } else if (colorMode === 'Bass') {
+      const barHeight = applySmoothing(current, this.prev[i], smoothing) * height;
+      this.prev[i] = barHeight / height;
+      const fill = mapFftToVisuals(i, colorMode, buckets);
+      if (colorMode === 'Bass') {
         const hue = buckets[0] * 200;
         fill = `hsl(${hue}, 100%, 50%)`;
       }
@@ -47,10 +39,12 @@ export default class VisualizerCanvas {
     }
   }
 
-  start(drawFn, settings, fpsCounter = null) {
+  start(drawFn, settings, fpsCounter = null, onFrame = null) {
     const loop = () => {
       if (fpsCounter) fpsCounter.tick();
-      this.drawFrame(drawFn(), settings);
+      const buckets = drawFn();
+      const beat = onFrame ? onFrame(buckets) : false;
+      this.drawFrame(buckets, settings, beat);
       this.animationId = requestAnimationFrame(loop);
     };
     loop();
@@ -59,6 +53,5 @@ export default class VisualizerCanvas {
   stop() {
     cancelAnimationFrame(this.animationId);
     this.animationId = null;
-    this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
   }
 }
