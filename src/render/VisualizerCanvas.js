@@ -49,7 +49,7 @@ export default class VisualizerCanvas {
     const height = this.canvas.clientHeight;
     this.canvas.width = width;
     this.canvas.height = height;
-    const { colorMode, intensity, smoothing, strobe } = settings;
+    const { colorMode, intensity, smoothing, strobe, bgColor } = settings;
 
     if (strobe && beat) {
       this.ctx.fillStyle = 'rgba(255,255,255,0.8)';
@@ -57,7 +57,8 @@ export default class VisualizerCanvas {
       return;
     }
 
-    this.ctx.clearRect(0, 0, width, height);
+    this.ctx.fillStyle = bgColor || '#000';
+    this.ctx.fillRect(0, 0, width, height);
     const barWidth = width / this.numBars;
     for (let i = 0; i < this.numBars; i++) {
       const current = Math.min(buckets[i] * intensity, 1);
@@ -74,7 +75,7 @@ export default class VisualizerCanvas {
     const height = this.canvas.clientHeight;
     this.canvas.width = width;
     this.canvas.height = height;
-    const { colorMode, intensity, smoothing, strobe } = settings;
+    const { colorMode, intensity, smoothing, strobe, bgColor } = settings;
 
     if (strobe && beat) {
       this.ctx.fillStyle = 'rgba(255,255,255,0.8)';
@@ -82,7 +83,8 @@ export default class VisualizerCanvas {
       return;
     }
 
-    this.ctx.clearRect(0, 0, width, height);
+    this.ctx.fillStyle = bgColor || '#000';
+    this.ctx.fillRect(0, 0, width, height);
     const cx = width / 2;
     const cy = height / 2;
     const maxRadius = Math.min(cx, cy);
