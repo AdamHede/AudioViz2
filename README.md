@@ -34,4 +34,5 @@ npm test
 npx jest --coverage
 ```
 
-The tunnel scene is currently disabled when using the Three.js renderer.
+The tunnel scene is currently disabled when using the Three.js renderer. A new
+**3D text** scene displays rotating text that gently bounces to the beat.
