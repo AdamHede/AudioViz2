@@ -60,3 +60,15 @@ OpenAI Codex should follow a test-first or test-parallel approach for new code.
 ```bash
 npm test              # run all tests
 npm test -- --watch   # watch mode for development
+```
+
+### ⚠️ Important Testing Notes for AI Agents:
+
+**Jest Installation**: Jest is installed as a dev dependency and should NOT be run directly. Always use:
+- ✅ `npm test` (recommended)
+- ✅ `npx jest` (if you need specific jest options)
+- ❌ `jest` (will fail with "jest: not found")
+
+**Common Issue**: If you see "sh: 1: jest: not found", it means you're trying to run `jest` directly instead of through npm scripts. Jest is not globally installed (which is correct for this project).
+
+**Dependencies**: Make sure `npm install` has been run to install all dev dependencies including jest.
