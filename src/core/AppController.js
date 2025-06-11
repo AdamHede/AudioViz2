@@ -7,11 +7,12 @@ import SceneConfig from '../render/SceneConfig.js';
 import Controls from '../ui/Controls.js';
 import SettingsPanel from '../ui/SettingsPanel.js';
 import FpsCounter from '../ui/FpsCounter.js';
+import SceneButtons from '../ui/SceneButtons.js';
 import CueLogger from './CueLogger.js';
 
 export default class AppController {
   constructor(elements) {
-    const { fileInput, playBtn, stopBtn, downloadBtn, canvas, settingsPanel, fpsDisplay } = elements;
+    const { fileInput, playBtn, stopBtn, downloadBtn, canvas, settingsPanel, fpsDisplay, sceneButtons } = elements;
     this.controls = new Controls(fileInput, playBtn, stopBtn, downloadBtn);
     this.settings = {
       colorMode: 'Rainbow',
@@ -25,6 +26,7 @@ export default class AppController {
     this.analyzer = new AudioAnalyzer(this.player.audioCtx, SceneConfig.NUM_BARS);
     this.visualizer = new VisualizerCanvas(canvas, SceneConfig.NUM_BARS);
     this.fpsCounter = new FpsCounter(fpsDisplay);
+    this.sceneButtons = new SceneButtons(sceneButtons);
     this.cueLogger = new CueLogger();
     this.beatDetector = new BeatDetector();
     this.animationId = null;
@@ -72,6 +74,10 @@ export default class AppController {
     });
     this.controls.bindDownload(() => {
       this.cueLogger.download();
+    });
+
+    this.sceneButtons.bindSceneChange(scene => {
+      this.visualizer.setScene(scene);
     });
   }
 }
