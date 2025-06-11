@@ -4,8 +4,8 @@ import { TextGeometry } from 'three/addons/geometries/TextGeometry.js';
 import applySmoothing from './applySmoothing.js';
 
 /**
- * Three.js based visualizer with a bars scene.
- * The tunnel scene is currently a no-op placeholder.
+ * Three.js based visualizer with both bar and tunnel scenes.
+ * The tunnel scene renders a moving 3D pipeline that reacts to music.
  */
 export default class VisualizerThree {
   constructor(canvas, numBars) {
@@ -21,8 +21,15 @@ export default class VisualizerThree {
     );
     this.camera.position.z = 5;
     this.bars = [];
+    this.tunnelRings = [];
     this.prev = new Array(numBars).fill(0);
     this.activeScene = 'bars';
+    this.hueOffset = 0;
+    this.tunnelSegments = 20;
+    this.tunnelSpacing = 0.7;
+    this.tunnelSpeed = 0.05;
+    this.initBars();
+    this.initTunnel();
     this.textMesh = null;
     this.initBars();
     this.initText();
@@ -41,6 +48,17 @@ export default class VisualizerThree {
     }
   }
 
+  /** Initialize tunnel ring meshes */
+  initTunnel() {
+    for (let i = 0; i < this.tunnelSegments; i++) {
+      const geometry = new THREE.TorusGeometry(3, 0.1, 8, 16);
+      const material = new THREE.MeshBasicMaterial({ color: 0xffffff });
+      const mesh = new THREE.Mesh(geometry, material);
+      mesh.rotation.x = Math.PI / 2;
+      mesh.position.z = -i * this.tunnelSpacing;
+      this.scene.add(mesh);
+      this.tunnelRings.push(mesh);
+    }
   /** Load font and create 3D text mesh */
   initText() {
     const loader = new FontLoader();
@@ -74,6 +92,11 @@ export default class VisualizerThree {
   setScene(scene) {
     this.activeScene = scene;
     this.prev.fill(0);
+    if (scene === 'tunnel') {
+      this.camera.position.z = 0;
+    } else {
+      this.camera.position.z = 5;
+    }
   }
 
   resize() {
@@ -101,8 +124,22 @@ export default class VisualizerThree {
     this.renderer.render(this.scene, this.camera);
   }
 
-  drawTunnel() {
+  drawTunnel(buckets, settings) {
     this.resize();
+    const energy = buckets.reduce((s, v) => s + v, 0) / buckets.length;
+    const scale = 1 + energy * settings.intensity;
+    this.hueOffset = (this.hueOffset + 0.5) % 360;
+    const loopDist = this.tunnelSegments * this.tunnelSpacing;
+    for (let i = 0; i < this.tunnelRings.length; i++) {
+      const ring = this.tunnelRings[i];
+      ring.position.z += this.tunnelSpeed;
+      if (ring.position.z > this.camera.position.z) {
+        ring.position.z -= loopDist;
+      }
+      ring.scale.setScalar(scale);
+      const hue = (this.hueOffset + (i / this.tunnelRings.length) * 360) % 360;
+      ring.material.color = new THREE.Color(`hsl(${hue}, 100%, 50%)`);
+    }
     this.renderer.render(this.scene, this.camera);
   }
 
