@@ -8,6 +8,7 @@ export default class VisualizerCanvas {
     this.numBars = numBars;
     this.animationId = null;
     this.prev = new Array(numBars).fill(0);
+    this.scene = 'bars';
   }
 
   /**
@@ -29,7 +30,16 @@ export default class VisualizerCanvas {
     return '#fff';
   }
 
-  drawFrame(buckets, settings, beat = false) {
+  /**
+   * Change the active scene.
+   * @param {string} scene - scene identifier
+   */
+  setScene(scene) {
+    this.scene = scene;
+    this.prev.fill(0);
+  }
+
+  drawBars(buckets, settings, beat = false) {
     const width = this.canvas.clientWidth;
     const height = this.canvas.clientHeight;
     this.canvas.width = width;
@@ -51,6 +61,46 @@ export default class VisualizerCanvas {
       const fill = this.getColor(i, colorMode, buckets);
       this.ctx.fillStyle = fill;
       this.ctx.fillRect(i * barWidth, height - barHeight, barWidth - 2, barHeight);
+    }
+  }
+
+  drawTunnel(buckets, settings, beat = false) {
+    const width = this.canvas.clientWidth;
+    const height = this.canvas.clientHeight;
+    this.canvas.width = width;
+    this.canvas.height = height;
+    const { colorMode, intensity, smoothing, strobe } = settings;
+
+    if (strobe && beat) {
+      this.ctx.fillStyle = 'rgba(255,255,255,0.8)';
+      this.ctx.fillRect(0, 0, width, height);
+      return;
+    }
+
+    this.ctx.clearRect(0, 0, width, height);
+    const cx = width / 2;
+    const cy = height / 2;
+    const maxRadius = Math.min(cx, cy);
+    const angleStep = (Math.PI * 2) / this.numBars;
+    this.ctx.lineWidth = 2;
+    for (let i = 0; i < this.numBars; i++) {
+      const current = Math.min(buckets[i] * intensity, 1);
+      const radius = applySmoothing(current, this.prev[i], smoothing) * maxRadius;
+      this.prev[i] = radius / maxRadius;
+      const angle = i * angleStep;
+      this.ctx.strokeStyle = this.getColor(i, colorMode, buckets);
+      this.ctx.beginPath();
+      this.ctx.moveTo(cx, cy);
+      this.ctx.lineTo(cx + Math.cos(angle) * radius, cy + Math.sin(angle) * radius);
+      this.ctx.stroke();
+    }
+  }
+
+  drawFrame(buckets, settings, beat = false) {
+    if (this.scene === 'tunnel') {
+      this.drawTunnel(buckets, settings, beat);
+    } else {
+      this.drawBars(buckets, settings, beat);
     }
   }
 
