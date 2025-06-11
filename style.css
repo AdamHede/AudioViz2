@@ -37,6 +37,13 @@ body {
   width: 120px;
 }
 
+#settingsPanel input[type='color'] {
+  width: 120px;
+  padding: 0;
+  border: none;
+  background: none;
+}
+
 canvas {
   flex: 1;
   width: 100%;

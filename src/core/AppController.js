@@ -22,8 +22,9 @@ export default class AppController {
       smoothing: 0.2,
       strobe: false,
       strobeSensitivity: 50,
+      bgColor: '#000000',
     };
-    new SettingsPanel(settingsPanel, this.settings);
+    new SettingsPanel(settingsPanel, this.settings, canvas);
     this.player = new AudioPlayer();
     this.analyzer = new AudioAnalyzer(this.player.audioCtx, SceneConfig.NUM_BARS);
     this.threeLayer = new ThreeJsLayer(canvas, SceneConfig.NUM_BARS);
