@@ -1,5 +1,5 @@
-import { applySmoothing } from './applySmoothing.js';
-import { mapFftToVisuals } from './mapFftToVisuals.js';
+import applySmoothing from './applySmoothing.js';
+
 
 export default class VisualizerCanvas {
   constructor(canvas, numBars) {
@@ -8,6 +8,25 @@ export default class VisualizerCanvas {
     this.numBars = numBars;
     this.animationId = null;
     this.prev = new Array(numBars).fill(0);
+  }
+
+  /**
+   * Map bar index and settings to a display color.
+   * @param {number} index - bar index
+   * @param {string} colorMode - selected color mode
+   * @param {number[]} buckets - current frequency buckets
+   * @returns {string} CSS color
+   */
+  getColor(index, colorMode, buckets) {
+    if (colorMode === 'Rainbow') {
+      const hue = (index / this.numBars) * 360;
+      return `hsl(${hue}, 100%, 50%)`;
+    }
+    if (colorMode === 'Bass') {
+      const hue = buckets[0] * 200;
+      return `hsl(${hue}, 100%, 50%)`;
+    }
+    return '#fff';
   }
 
   drawFrame(buckets, settings, beat = false) {
@@ -29,11 +48,7 @@ export default class VisualizerCanvas {
       const current = Math.min(buckets[i] * intensity, 1);
       const barHeight = applySmoothing(current, this.prev[i], smoothing) * height;
       this.prev[i] = barHeight / height;
-      const fill = mapFftToVisuals(i, colorMode, buckets);
-      if (colorMode === 'Bass') {
-        const hue = buckets[0] * 200;
-        fill = `hsl(${hue}, 100%, 50%)`;
-      }
+      const fill = this.getColor(i, colorMode, buckets);
       this.ctx.fillStyle = fill;
       this.ctx.fillRect(i * barWidth, height - barHeight, barWidth - 2, barHeight);
     }
