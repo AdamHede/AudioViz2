@@ -6,6 +6,8 @@ Clone and run:
 git clone <repo-url> && cd AudioViz2 && npm i && npm run dev
 ```
 
+The bars visualization now uses **Three.js** for 3D rendering. Running `npm install` installs the required `three` dependency.
+
 ## Project Structure
 
 ```
@@ -31,3 +33,5 @@ Run the test suite with:
 npm test
 npx jest --coverage
 ```
+
+The tunnel scene is currently disabled when using the Three.js renderer.

@@ -9,6 +9,7 @@ window.addEventListener('DOMContentLoaded', () => {
     canvas: document.getElementById('canvas'),
     settingsPanel: document.getElementById('settingsPanel'),
     fpsDisplay: document.getElementById('fpsDisplay'),
+    sceneButtons: document.getElementById('sceneButtons'),
   };
   new AppController(elements);
 });
