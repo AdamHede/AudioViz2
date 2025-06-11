@@ -1,6 +1,7 @@
 import AudioPlayer from '../audio/AudioPlayer.js';
 import AudioAnalyzer from '../audio/AudioAnalyzer.js';
 import BeatDetector from '../audio/BeatDetector.js';
+import mapSensitivityToThreshold from '../audio/mapSensitivityToThreshold.js';
 import VisualizerCanvas from '../render/VisualizerCanvas.js';
 import SceneConfig from '../render/SceneConfig.js';
 import Controls from '../ui/Controls.js';
@@ -17,6 +18,7 @@ export default class AppController {
       intensity: 1,
       smoothing: 0.2,
       strobe: false,
+      strobeSensitivity: 50,
     };
     new SettingsPanel(settingsPanel, this.settings);
     this.player = new AudioPlayer();
@@ -51,6 +53,9 @@ export default class AppController {
           this.settings,
           this.fpsCounter,
           buckets => {
+            this.beatDetector.threshold = mapSensitivityToThreshold(
+              this.settings.strobeSensitivity
+            );
             const beat = this.beatDetector.update(buckets);
             this.cueLogger.logFrame(buckets);
             return beat;
