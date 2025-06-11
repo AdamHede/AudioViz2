@@ -13,6 +13,7 @@ jest.mock('three', () => {
     })),
     BoxGeometry: jest.fn(),
     TorusGeometry: jest.fn(),
+    RingGeometry: jest.fn(),
     MeshBasicMaterial: jest.fn(() => ({ color: {} })),
     Mesh: jest.fn(() => ({
       scale: { y: 1, setScalar: jest.fn() },
@@ -20,6 +21,7 @@ jest.mock('three', () => {
       rotation: { x: 0 },
       material: { color: {} },
     })),
+    DoubleSide: 2,
     Color: jest.fn(() => ({})),
     MeshPhongMaterial: jest.fn(() => ({})),
   };
