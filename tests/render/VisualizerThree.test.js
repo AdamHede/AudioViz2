@@ -5,6 +5,7 @@ jest.mock('three', () => {
     WebGLRenderer: jest.fn(() => ({
       setSize: jest.fn(),
       render: mockRender,
+      setClearColor: jest.fn(),
     })),
     Scene: jest.fn(() => ({ add: mockAdd })),
     PerspectiveCamera: jest.fn(() => ({
