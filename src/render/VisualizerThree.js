@@ -31,7 +31,6 @@ export default class VisualizerThree {
     this.initBars();
     this.initTunnel();
     this.textMesh = null;
-    this.initBars();
     this.initText();
   }
 
@@ -43,6 +42,7 @@ export default class VisualizerThree {
       const material = new THREE.MeshBasicMaterial({ color: 0xffffff });
       const mesh = new THREE.Mesh(geometry, material);
       mesh.position.x = (i - this.numBars / 2) * spacing;
+      mesh.visible = this.activeScene === 'bars';
       this.scene.add(mesh);
       this.bars.push(mesh);
     }
@@ -56,6 +56,7 @@ export default class VisualizerThree {
       const mesh = new THREE.Mesh(geometry, material);
       mesh.rotation.x = Math.PI / 2;
       mesh.position.z = -i * this.tunnelSpacing;
+      mesh.visible = this.activeScene === 'tunnel';
       this.scene.add(mesh);
       this.tunnelRings.push(mesh);
     }
@@ -73,6 +74,7 @@ export default class VisualizerThree {
       geometry.center();
       const material = new THREE.MeshPhongMaterial({ color: 0xffffff });
       this.textMesh = new THREE.Mesh(geometry, material);
+      this.textMesh.visible = this.activeScene === 'text';
       this.scene.add(this.textMesh);
     });
   }
@@ -98,6 +100,16 @@ export default class VisualizerThree {
       this.camera.position.z = 0;
     } else {
       this.camera.position.z = 5;
+    }
+    // Update visibility for scene objects
+    this.bars.forEach(bar => {
+      bar.visible = scene === 'bars';
+    });
+    this.tunnelRings.forEach(ring => {
+      ring.visible = scene === 'tunnel';
+    });
+    if (this.textMesh) {
+      this.textMesh.visible = scene === 'text';
     }
   }
 
