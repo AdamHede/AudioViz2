@@ -8,7 +8,7 @@ import applySmoothing from './applySmoothing.js';
  * The tunnel scene renders a moving 3D pipeline that reacts to music.
  */
 export default class VisualizerThree {
-  constructor(canvas, numBars) {
+  constructor(canvas, numBars, text = 'AudioViz') {
     this.canvas = canvas;
     this.numBars = numBars;
     this.renderer = new THREE.WebGLRenderer({ canvas, antialias: true });
@@ -31,8 +31,10 @@ export default class VisualizerThree {
     this.initBars();
     this.initTunnel();
     this.textMesh = null;
+    this.font = null;
+    this.pendingText = text;
     this.initBars();
-    this.initText();
+    this.initText(text);
   }
 
   /** Initialize bar meshes and add them to the scene */
@@ -62,11 +64,21 @@ export default class VisualizerThree {
   }
 
   /** Load font and create 3D text mesh */
-  initText() {
+  initText(text) {
     const loader = new FontLoader();
     loader.load('/fonts/helvetiker_regular.typeface.json', font => {
-      const geometry = new TextGeometry('AudioViz', {
-        font,
+      this.font = font;
+      this.setText(text || this.pendingText);
+      this.pendingText = null;
+    });
+  }
+
+  /** Update the displayed 3D text */
+  setText(text) {
+    if (this.font) {
+      if (this.textMesh) this.scene.remove(this.textMesh);
+      const geometry = new TextGeometry(text, {
+        font: this.font,
         size: 1,
         height: 0.2,
       });
@@ -74,7 +86,9 @@ export default class VisualizerThree {
       const material = new THREE.MeshPhongMaterial({ color: 0xffffff });
       this.textMesh = new THREE.Mesh(geometry, material);
       this.scene.add(this.textMesh);
-    });
+    } else {
+      this.pendingText = text;
+    }
   }
 
   /** Map bar index and settings to a display color */
