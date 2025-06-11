@@ -8,6 +8,7 @@ window.addEventListener('DOMContentLoaded', () => {
     downloadBtn: document.getElementById('downloadCue'),
     canvas: document.getElementById('canvas'),
     overlay: document.getElementById('overlay'),
+    noiseCanvas: document.getElementById('noise'),
     settingsPanel: document.getElementById('settingsPanel'),
     fpsDisplay: document.getElementById('fpsDisplay'),
     sceneButtons: document.getElementById('sceneButtons'),

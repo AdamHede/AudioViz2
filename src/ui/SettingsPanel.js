@@ -14,6 +14,10 @@ export default class SettingsPanel {
     this.strobe = this.container.querySelector('#strobeToggle');
     this.strobeSensitivity = this.container.querySelector('#strobeSensitivity');
     this.strobeSensLabel = this.container.querySelector('#strobeSensitivityLabel');
+    this.noiseToggle = this.container.querySelector('#noiseToggle');
+    this.noiseBlend = this.container.querySelector('#noiseBlend');
+    this.noiseScale = this.container.querySelector('#noiseScale');
+    this.noiseSpeed = this.container.querySelector('#noiseSpeed');
     this.textInput = this.container.querySelector('#textContent');
     this.textLabel = this.container.querySelector('#textContentLabel');
 
@@ -23,6 +27,10 @@ export default class SettingsPanel {
       this.settings.smoothing = parseFloat(this.smoothing.value);
       this.settings.strobe = this.strobe.checked;
       this.settings.strobeSensitivity = parseFloat(this.strobeSensitivity.value);
+      if (this.noiseToggle) this.settings.noiseEnabled = this.noiseToggle.checked;
+      if (this.noiseBlend) this.settings.noiseBlend = this.noiseBlend.value;
+      if (this.noiseScale) this.settings.noiseScale = parseFloat(this.noiseScale.value);
+      if (this.noiseSpeed) this.settings.noiseSpeed = parseFloat(this.noiseSpeed.value);
       if (this.textInput) {
         this.settings.textContent = this.textInput.value;
       }
@@ -33,6 +41,10 @@ export default class SettingsPanel {
       this.intensity.addEventListener(evt, update);
       this.smoothing.addEventListener(evt, update);
       this.strobeSensitivity.addEventListener(evt, update);
+      if (this.noiseToggle) this.noiseToggle.addEventListener(evt, update);
+      if (this.noiseBlend) this.noiseBlend.addEventListener(evt, update);
+      if (this.noiseScale) this.noiseScale.addEventListener(evt, update);
+      if (this.noiseSpeed) this.noiseSpeed.addEventListener(evt, update);
       if (this.textInput) {
         this.textInput.addEventListener(evt, e => {
           update();

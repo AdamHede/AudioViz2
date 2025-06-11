@@ -5,6 +5,7 @@ import mapSensitivityToThreshold from '../audio/mapSensitivityToThreshold.js';
 import LayerManager from '../render/layers/LayerManager.js';
 import ThreeJsLayer from '../render/layers/ThreeJsLayer.js';
 import StrobeLayer from '../render/layers/StrobeLayer.js';
+import NoiseLayer from '../render/layers/NoiseLayer.js';
 import SceneConfig from '../render/SceneConfig.js';
 import Controls from '../ui/Controls.js';
 import SettingsPanel from '../ui/SettingsPanel.js';
@@ -14,7 +15,7 @@ import CueLogger from './CueLogger.js';
 
 export default class AppController {
   constructor(elements) {
-    const { fileInput, playBtn, stopBtn, downloadBtn, canvas, overlay, settingsPanel, fpsDisplay, sceneButtons } = elements;
+    const { fileInput, playBtn, stopBtn, downloadBtn, canvas, overlay, noiseCanvas, settingsPanel, fpsDisplay, sceneButtons } = elements;
     this.controls = new Controls(fileInput, playBtn, stopBtn, downloadBtn);
     this.settings = {
       colorMode: 'Rainbow',
@@ -23,13 +24,18 @@ export default class AppController {
       strobe: false,
       strobeSensitivity: 50,
       textContent: 'AudioViz',
+      noiseEnabled: false,
+      noiseBlend: 'overlay',
+      noiseScale: 50,
+      noiseSpeed: 0.01,
     };
     this.settingsPanel = new SettingsPanel(settingsPanel, this.settings);
     this.player = new AudioPlayer();
     this.analyzer = new AudioAnalyzer(this.player.audioCtx, SceneConfig.NUM_BARS);
     this.threeLayer = new ThreeJsLayer(canvas, SceneConfig.NUM_BARS, this.settings.textContent);
+    this.noiseLayer = new NoiseLayer(noiseCanvas);
     this.strobeLayer = new StrobeLayer(overlay);
-    this.layerManager = new LayerManager([this.threeLayer, this.strobeLayer]);
+    this.layerManager = new LayerManager([this.threeLayer, this.noiseLayer, this.strobeLayer]);
     this.fpsCounter = new FpsCounter(fpsDisplay);
     this.sceneButtons = new SceneButtons(sceneButtons);
     this.cueLogger = new CueLogger();
