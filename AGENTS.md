@@ -16,7 +16,8 @@ This project is an audio-reactive visualizer built with JavaScript, Web Audio AP
     - `AudioPlayer.js` — manages load/play/pause of audio
     - `AudioAnalyzer.js` — real-time FFT & frequency data interface
   - `/render/` — rendering logic
-    - `VisualizerCanvas.js` — draws visuals based on mapped data
+    - `VisualizerThree.js` — Three.js based visualizer
+    - `VisualizerCanvas.js` — legacy 2-D fallback
     - `SceneConfig.js` — defines visual fixture layout & mappings
   - `/core/` — controller logic
     - `AppController.js` — coordinates audio/render/UI components
@@ -35,7 +36,7 @@ This project is an audio-reactive visualizer built with JavaScript, Web Audio AP
 - Code should be **modular** and avoid large monolithic files
 - Prefer **dependency injection** for config/state
 - Naming conventions:
-  - PascalCase for classes and components (`VisualizerCanvas`)
+  - PascalCase for classes and components (`VisualizerThree`)
   - camelCase for functions and variables (`mapFftToVisuals`)
 - Each function or method must include a short comment for non-obvious logic
 - Files should be ≤ 200 LOC if possible
@@ -72,3 +73,7 @@ npm test -- --watch   # watch mode for development
 **Common Issue**: If you see "sh: 1: jest: not found", it means you're trying to run `jest` directly instead of through npm scripts. Jest is not globally installed (which is correct for this project).
 
 **Dependencies**: Make sure `npm install` has been run to install all dev dependencies including jest.
+
+### Three.js Integration
+
+The 3D bars scene uses `three` via `VisualizerThree.js`. The tunnel scene is currently a placeholder. Install dependencies with `npm install` to ensure `three` is available.

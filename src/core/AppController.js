@@ -2,7 +2,7 @@ import AudioPlayer from '../audio/AudioPlayer.js';
 import AudioAnalyzer from '../audio/AudioAnalyzer.js';
 import BeatDetector from '../audio/BeatDetector.js';
 import mapSensitivityToThreshold from '../audio/mapSensitivityToThreshold.js';
-import VisualizerCanvas from '../render/VisualizerCanvas.js';
+import VisualizerThree from '../render/VisualizerThree.js';
 import SceneConfig from '../render/SceneConfig.js';
 import Controls from '../ui/Controls.js';
 import SettingsPanel from '../ui/SettingsPanel.js';
@@ -24,7 +24,7 @@ export default class AppController {
     new SettingsPanel(settingsPanel, this.settings);
     this.player = new AudioPlayer();
     this.analyzer = new AudioAnalyzer(this.player.audioCtx, SceneConfig.NUM_BARS);
-    this.visualizer = new VisualizerCanvas(canvas, SceneConfig.NUM_BARS);
+    this.visualizer = new VisualizerThree(canvas, SceneConfig.NUM_BARS);
     this.fpsCounter = new FpsCounter(fpsDisplay);
     this.sceneButtons = new SceneButtons(sceneButtons);
     this.cueLogger = new CueLogger();
