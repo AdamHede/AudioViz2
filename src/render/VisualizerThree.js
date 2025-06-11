@@ -1,4 +1,6 @@
 import * as THREE from 'three';
+import { FontLoader } from 'three/addons/loaders/FontLoader.js';
+import { TextGeometry } from 'three/addons/geometries/TextGeometry.js';
 import applySmoothing from './applySmoothing.js';
 
 /**
@@ -28,6 +30,9 @@ export default class VisualizerThree {
     this.tunnelSpeed = 0.05;
     this.initBars();
     this.initTunnel();
+    this.textMesh = null;
+    this.initBars();
+    this.initText();
   }
 
   /** Initialize bar meshes and add them to the scene */
@@ -54,6 +59,20 @@ export default class VisualizerThree {
       this.scene.add(mesh);
       this.tunnelRings.push(mesh);
     }
+  /** Load font and create 3D text mesh */
+  initText() {
+    const loader = new FontLoader();
+    loader.load('/fonts/helvetiker_regular.typeface.json', font => {
+      const geometry = new TextGeometry('AudioViz', {
+        font,
+        size: 1,
+        height: 0.2,
+      });
+      geometry.center();
+      const material = new THREE.MeshPhongMaterial({ color: 0xffffff });
+      this.textMesh = new THREE.Mesh(geometry, material);
+      this.scene.add(this.textMesh);
+    });
   }
 
   /** Map bar index and settings to a display color */
@@ -124,9 +143,24 @@ export default class VisualizerThree {
     this.renderer.render(this.scene, this.camera);
   }
 
+  /** Animate 3D text rotation and bounce */
+  drawText(buckets, settings, beat = false) {
+    this.resize();
+    if (!this.textMesh) return;
+    const { intensity, smoothing } = settings;
+    const current = Math.min(buckets[0] * intensity, 1);
+    const value = applySmoothing(this.prev[0], current, smoothing);
+    this.prev[0] = value;
+    this.textMesh.rotation.y += 0.01;
+    this.textMesh.position.y = value + (beat ? 0.2 : 0);
+    this.renderer.render(this.scene, this.camera);
+  }
+
   drawFrame(buckets, settings, beat = false) {
     if (this.activeScene === 'tunnel') {
       this.drawTunnel(buckets, settings, beat);
+    } else if (this.activeScene === 'text') {
+      this.drawText(buckets, settings, beat);
     } else {
       this.drawBars(buckets, settings, beat);
     }
