@@ -1,4 +1,5 @@
 import applySmoothing from './applySmoothing.js';
+import { gradients, colorAt } from './gradients.js';
 
 
 export default class VisualizerCanvas {
@@ -26,6 +27,10 @@ export default class VisualizerCanvas {
     if (colorMode === 'Bass') {
       const hue = buckets[0] * 200;
       return `hsl(${hue}, 100%, 50%)`;
+    }
+    if (gradients[colorMode]) {
+      const t = index / this.numBars;
+      return colorAt(colorMode, t);
     }
     return '#fff';
   }
