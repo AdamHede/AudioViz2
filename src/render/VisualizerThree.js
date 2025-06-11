@@ -147,7 +147,8 @@ export default class VisualizerThree {
 
   drawBars(buckets, settings) {
     this.resize();
-    const { colorMode, intensity, smoothing } = settings;
+    const { colorMode, intensity, smoothing, bgColor } = settings;
+    this.renderer.setClearColor(bgColor || '#000');
     for (let i = 0; i < this.numBars; i++) {
       const current = Math.min(buckets[i] * intensity, 1);
       const height = applySmoothing(this.prev[i], current, smoothing) * 4 + 0.1;
@@ -162,6 +163,8 @@ export default class VisualizerThree {
 
   drawTunnel(buckets, settings) {
     this.resize();
+    const { bgColor } = settings;
+    this.renderer.setClearColor(bgColor || '#000');
     const energy = buckets.reduce((s, v) => s + v, 0) / buckets.length;
     const scale = 1 + energy * settings.intensity;
     for (const ring of this.tunnelRings) {
@@ -173,6 +176,8 @@ export default class VisualizerThree {
   /** Animate 3D text rotation and bounce */
   drawText(buckets, settings, beat = false) {
     this.resize();
+    const { bgColor } = settings;
+    this.renderer.setClearColor(bgColor || '#000');
     if (!this.textMesh) return;
     const { intensity, smoothing } = settings;
     const current = Math.min(buckets[0] * intensity, 1);

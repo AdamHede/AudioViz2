@@ -16,15 +16,18 @@ export default class AppController {
   constructor(elements) {
     const { fileInput, playBtn, stopBtn, downloadBtn, canvas, overlay, settingsPanel, fpsDisplay, sceneButtons } = elements;
     this.controls = new Controls(fileInput, playBtn, stopBtn, downloadBtn);
+    this.canvas = canvas;
     this.settings = {
       colorMode: 'Rainbow',
       intensity: 1,
+      bgColor: '#000000',
       smoothing: 0.2,
       strobe: false,
       strobeSensitivity: 50,
       textContent: 'AudioViz',
     };
     this.settingsPanel = new SettingsPanel(settingsPanel, this.settings);
+    this.canvas.style.backgroundColor = this.settings.bgColor;
     this.player = new AudioPlayer();
     this.analyzer = new AudioAnalyzer(this.player.audioCtx, SceneConfig.NUM_BARS);
     this.threeLayer = new ThreeJsLayer(canvas, SceneConfig.NUM_BARS, this.settings.textContent);
@@ -91,6 +94,10 @@ export default class AppController {
 
     this.settingsPanel.bindTextChange(text => {
       this.threeLayer.visualizer.setText(text);
+    });
+
+    this.settingsPanel.bindBgColorChange(color => {
+      this.canvas.style.backgroundColor = color;
     });
   }
 }

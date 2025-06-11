@@ -3,6 +3,7 @@ export default class SettingsPanel {
     this.settings = settings;
     this.container = container;
     this.onTextChange = null;
+    this.onBgColorChange = null;
     this.init();
   }
 
@@ -10,6 +11,7 @@ export default class SettingsPanel {
   init() {
     this.colorMode = this.container.querySelector('#colorMode');
     this.intensity = this.container.querySelector('#intensity');
+    this.bgColor = this.container.querySelector('#bgColor');
     this.smoothing = this.container.querySelector('#smoothing');
     this.strobe = this.container.querySelector('#strobeToggle');
     this.strobeSensitivity = this.container.querySelector('#strobeSensitivity');
@@ -21,6 +23,10 @@ export default class SettingsPanel {
       this.settings.colorMode = this.colorMode.value;
       this.settings.intensity = parseFloat(this.intensity.value);
       this.settings.smoothing = parseFloat(this.smoothing.value);
+      if (this.bgColor) {
+        this.settings.bgColor = this.bgColor.value;
+        if (this.onBgColorChange) this.onBgColorChange(this.bgColor.value);
+      }
       this.settings.strobe = this.strobe.checked;
       this.settings.strobeSensitivity = parseFloat(this.strobeSensitivity.value);
       if (this.textInput) {
@@ -31,6 +37,9 @@ export default class SettingsPanel {
     ['change', 'input'].forEach(evt => {
       this.colorMode.addEventListener(evt, update);
       this.intensity.addEventListener(evt, update);
+      if (this.bgColor) {
+        this.bgColor.addEventListener(evt, update);
+      }
       this.smoothing.addEventListener(evt, update);
       this.strobeSensitivity.addEventListener(evt, update);
       if (this.textInput) {
@@ -63,5 +72,10 @@ export default class SettingsPanel {
   /** Bind callback for when text content changes */
   bindTextChange(handler) {
     this.onTextChange = handler;
+  }
+
+  /** Bind callback for when background color changes */
+  bindBgColorChange(handler) {
+    this.onBgColorChange = handler;
   }
 }
