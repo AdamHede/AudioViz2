@@ -7,22 +7,24 @@
   <link rel="stylesheet" href="/style.css" />
 </head>
 <body>
-  <div id="controls">
-    <input type="file" id="fileInput" accept="audio/*" />
-    <button id="playBtn" disabled>Play</button>
-    <button id="stopBtn" disabled>Stop</button>
-    <button id="downloadCue" disabled>Download Cue JSON</button>
-  </div>
-  <div id="sceneButtons">
-    <button data-scene="bars">Bars</button>
-    <button data-scene="tunnel">Tunnel</button>
-    <button data-scene="text">3D Text</button>
-  </div>
-  <div id="settingsPanel">
-    <label>Color Mode
-      <select id="colorMode">
-        <option value="Rainbow">Rainbow</option>
-        <option value="Bass">Bass-colored</option>
+  <button id="sidebarToggle">☰</button>
+  <aside id="sidebar">
+    <div id="controls">
+      <input type="file" id="fileInput" accept="audio/*" />
+      <button id="playBtn" disabled>Play</button>
+      <button id="stopBtn" disabled>Stop</button>
+      <button id="downloadCue" disabled>Download Cue JSON</button>
+    </div>
+    <div id="sceneButtons">
+      <button data-scene="bars">Bars</button>
+      <button data-scene="tunnel">Tunnel</button>
+      <button data-scene="text">3D Text</button>
+    </div>
+    <div id="settingsPanel">
+      <label>Color Mode
+        <select id="colorMode">
+          <option value="Rainbow">Rainbow</option>
+          <option value="Bass">Bass-colored</option>
         <option value="White">Fixed White</option>
         <option value="Sunset">Sunset</option>
         <option value="Ocean">Ocean</option>
@@ -68,10 +70,11 @@
     <label>Noise Speed
       <input type="range" id="noiseSpeed" min="0" max="0.05" step="0.005" value="0.01" />
     </label>
-    <label id="textContentLabel">Text
-      <input type="text" id="textContent" value="AudioViz" />
-    </label>
-  </div>
+      <label id="textContentLabel">Text
+        <input type="text" id="textContent" value="AudioViz" />
+      </label>
+    </div>
+  </aside>
   <div id="fpsDisplay">FPS: 0</div>
   <canvas id="canvas"></canvas>
   <canvas id="noise"></canvas>
