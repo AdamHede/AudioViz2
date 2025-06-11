@@ -22,11 +22,12 @@ export default class AppController {
       smoothing: 0.2,
       strobe: false,
       strobeSensitivity: 50,
+      textContent: 'AudioViz',
     };
-    new SettingsPanel(settingsPanel, this.settings);
+    this.settingsPanel = new SettingsPanel(settingsPanel, this.settings);
     this.player = new AudioPlayer();
     this.analyzer = new AudioAnalyzer(this.player.audioCtx, SceneConfig.NUM_BARS);
-    this.threeLayer = new ThreeJsLayer(canvas, SceneConfig.NUM_BARS);
+    this.threeLayer = new ThreeJsLayer(canvas, SceneConfig.NUM_BARS, this.settings.textContent);
     this.strobeLayer = new StrobeLayer(overlay);
     this.layerManager = new LayerManager([this.threeLayer, this.strobeLayer]);
     this.fpsCounter = new FpsCounter(fpsDisplay);
@@ -82,6 +83,14 @@ export default class AppController {
 
     this.sceneButtons.bindSceneChange(scene => {
       this.threeLayer.visualizer.setScene(scene);
+      this.settingsPanel.toggleTextInput(scene === 'text');
+      if (scene === 'text') {
+        this.threeLayer.visualizer.setText(this.settings.textContent);
+      }
+    });
+
+    this.settingsPanel.bindTextChange(text => {
+      this.threeLayer.visualizer.setText(text);
     });
   }
 }

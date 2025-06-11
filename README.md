@@ -35,4 +35,4 @@ npx jest --coverage
 ```
 
 The tunnel scene is currently disabled when using the Three.js renderer. A new
-**3D text** scene displays rotating text that gently bounces to the beat.
+**3D text** scene displays rotating text that gently bounces to the beat. When this scene is active a text field appears in the settings panel allowing the displayed text to be edited in real time.

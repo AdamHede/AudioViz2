@@ -2,9 +2,9 @@ import Layer from './Layer.js';
 import VisualizerThree from '../VisualizerThree.js';
 
 export default class ThreeJsLayer extends Layer {
-  constructor(canvas, numBars) {
+  constructor(canvas, numBars, text = 'AudioViz') {
     super();
-    this.visualizer = new VisualizerThree(canvas, numBars);
+    this.visualizer = new VisualizerThree(canvas, numBars, text);
   }
 
   render(data, settings) {

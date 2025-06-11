@@ -2,6 +2,7 @@ export default class SettingsPanel {
   constructor(container, settings) {
     this.settings = settings;
     this.container = container;
+    this.onTextChange = null;
     this.init();
   }
 
@@ -13,6 +14,8 @@ export default class SettingsPanel {
     this.strobe = this.container.querySelector('#strobeToggle');
     this.strobeSensitivity = this.container.querySelector('#strobeSensitivity');
     this.strobeSensLabel = this.container.querySelector('#strobeSensitivityLabel');
+    this.textInput = this.container.querySelector('#textContent');
+    this.textLabel = this.container.querySelector('#textContentLabel');
 
     const update = () => {
       this.settings.colorMode = this.colorMode.value;
@@ -20,6 +23,9 @@ export default class SettingsPanel {
       this.settings.smoothing = parseFloat(this.smoothing.value);
       this.settings.strobe = this.strobe.checked;
       this.settings.strobeSensitivity = parseFloat(this.strobeSensitivity.value);
+      if (this.textInput) {
+        this.settings.textContent = this.textInput.value;
+      }
     };
 
     ['change', 'input'].forEach(evt => {
@@ -27,6 +33,12 @@ export default class SettingsPanel {
       this.intensity.addEventListener(evt, update);
       this.smoothing.addEventListener(evt, update);
       this.strobeSensitivity.addEventListener(evt, update);
+      if (this.textInput) {
+        this.textInput.addEventListener(evt, e => {
+          update();
+          if (this.onTextChange) this.onTextChange(e.target.value);
+        });
+      }
     });
     this.strobe.addEventListener('change', e => {
       update();
@@ -36,5 +48,20 @@ export default class SettingsPanel {
 
     update();
     this.strobeSensLabel.style.display = this.strobe.checked ? 'flex' : 'none';
+    if (this.textLabel) {
+      this.textLabel.style.display = 'none';
+    }
+  }
+
+  /** Show or hide the text input for the 3D text scene */
+  toggleTextInput(show) {
+    if (this.textLabel) {
+      this.textLabel.style.display = show ? 'flex' : 'none';
+    }
+  }
+
+  /** Bind callback for when text content changes */
+  bindTextChange(handler) {
+    this.onTextChange = handler;
   }
 }
