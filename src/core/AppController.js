@@ -2,7 +2,9 @@ import AudioPlayer from '../audio/AudioPlayer.js';
 import AudioAnalyzer from '../audio/AudioAnalyzer.js';
 import BeatDetector from '../audio/BeatDetector.js';
 import mapSensitivityToThreshold from '../audio/mapSensitivityToThreshold.js';
-import VisualizerThree from '../render/VisualizerThree.js';
+import LayerManager from '../render/layers/LayerManager.js';
+import ThreeJsLayer from '../render/layers/ThreeJsLayer.js';
+import StrobeLayer from '../render/layers/StrobeLayer.js';
 import SceneConfig from '../render/SceneConfig.js';
 import Controls from '../ui/Controls.js';
 import SettingsPanel from '../ui/SettingsPanel.js';
@@ -12,7 +14,7 @@ import CueLogger from './CueLogger.js';
 
 export default class AppController {
   constructor(elements) {
-    const { fileInput, playBtn, stopBtn, downloadBtn, canvas, settingsPanel, fpsDisplay, sceneButtons } = elements;
+    const { fileInput, playBtn, stopBtn, downloadBtn, canvas, overlay, settingsPanel, fpsDisplay, sceneButtons } = elements;
     this.controls = new Controls(fileInput, playBtn, stopBtn, downloadBtn);
     this.settings = {
       colorMode: 'Rainbow',
@@ -24,7 +26,9 @@ export default class AppController {
     new SettingsPanel(settingsPanel, this.settings);
     this.player = new AudioPlayer();
     this.analyzer = new AudioAnalyzer(this.player.audioCtx, SceneConfig.NUM_BARS);
-    this.visualizer = new VisualizerThree(canvas, SceneConfig.NUM_BARS);
+    this.threeLayer = new ThreeJsLayer(canvas, SceneConfig.NUM_BARS);
+    this.strobeLayer = new StrobeLayer(overlay);
+    this.layerManager = new LayerManager([this.threeLayer, this.strobeLayer]);
     this.fpsCounter = new FpsCounter(fpsDisplay);
     this.sceneButtons = new SceneButtons(sceneButtons);
     this.cueLogger = new CueLogger();
@@ -48,9 +52,9 @@ export default class AppController {
     this.controls.bindPlay(() => {
       this.player.play();
       this.cueLogger.reset();
-      if (!this.visualizer.animationId) {
+      if (!this.layerManager.animationId) {
         this.fpsCounter.reset();
-        this.visualizer.start(
+        this.layerManager.start(
           () => this.analyzer.getFrequencyBuckets(),
           this.settings,
           this.fpsCounter,
@@ -68,7 +72,7 @@ export default class AppController {
     });
     this.controls.bindStop(() => {
       this.player.stop();
-      this.visualizer.stop();
+      this.layerManager.stop();
       this.fpsCounter.reset();
       this.controls.setDownloadEnabled(true);
     });
@@ -77,7 +81,7 @@ export default class AppController {
     });
 
     this.sceneButtons.bindSceneChange(scene => {
-      this.visualizer.setScene(scene);
+      this.threeLayer.visualizer.setScene(scene);
     });
   }
 }
