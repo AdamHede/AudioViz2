@@ -51,12 +51,30 @@
     <label id="strobeSensitivityLabel">Strobe Sensitivity
       <input type="range" id="strobeSensitivity" min="0" max="100" step="1" value="50" />
     </label>
+    <label>
+      <input type="checkbox" id="noiseToggle" /> Noise Overlay
+    </label>
+    <label>Noise Blend
+      <select id="noiseBlend">
+        <option value="overlay">Overlay</option>
+        <option value="screen">Screen</option>
+        <option value="multiply">Multiply</option>
+        <option value="lighten">Lighten</option>
+      </select>
+    </label>
+    <label>Noise Scale
+      <input type="range" id="noiseScale" min="20" max="100" step="5" value="50" />
+    </label>
+    <label>Noise Speed
+      <input type="range" id="noiseSpeed" min="0" max="0.05" step="0.005" value="0.01" />
+    </label>
     <label id="textContentLabel">Text
       <input type="text" id="textContent" value="AudioViz" />
     </label>
   </div>
   <div id="fpsDisplay">FPS: 0</div>
   <canvas id="canvas"></canvas>
+  <canvas id="noise"></canvas>
   <canvas id="overlay"></canvas>
   <script type="module" src="/src/main.js"></script>
 </body>
