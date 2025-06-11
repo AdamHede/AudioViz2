@@ -11,21 +11,30 @@ export default class SettingsPanel {
     this.intensity = this.container.querySelector('#intensity');
     this.smoothing = this.container.querySelector('#smoothing');
     this.strobe = this.container.querySelector('#strobeToggle');
+    this.strobeSensitivity = this.container.querySelector('#strobeSensitivity');
+    this.strobeSensLabel = this.container.querySelector('#strobeSensitivityLabel');
 
     const update = () => {
       this.settings.colorMode = this.colorMode.value;
       this.settings.intensity = parseFloat(this.intensity.value);
       this.settings.smoothing = parseFloat(this.smoothing.value);
       this.settings.strobe = this.strobe.checked;
+      this.settings.strobeSensitivity = parseFloat(this.strobeSensitivity.value);
     };
 
     ['change', 'input'].forEach(evt => {
       this.colorMode.addEventListener(evt, update);
       this.intensity.addEventListener(evt, update);
       this.smoothing.addEventListener(evt, update);
+      this.strobeSensitivity.addEventListener(evt, update);
     });
-    this.strobe.addEventListener('change', update);
+    this.strobe.addEventListener('change', e => {
+      update();
+      const show = e.target.checked;
+      this.strobeSensLabel.style.display = show ? 'flex' : 'none';
+    });
 
     update();
+    this.strobeSensLabel.style.display = this.strobe.checked ? 'flex' : 'none';
   }
 }
