@@ -2,6 +2,7 @@ import * as THREE from 'three';
 import { FontLoader } from 'three/addons/loaders/FontLoader.js';
 import { TextGeometry } from 'three/addons/geometries/TextGeometry.js';
 import applySmoothing from './applySmoothing.js';
+import { gradients, colorAt } from './gradients.js';
 
 /**
  * Three.js based visualizer with both bar and tunnel scenes.
@@ -86,6 +87,10 @@ export default class VisualizerThree {
     if (colorMode === 'Bass') {
       const hue = buckets[0] * 200;
       return new THREE.Color(`hsl(${hue}, 100%, 50%)`);
+    }
+    if (gradients[colorMode]) {
+      const t = index / this.numBars;
+      return new THREE.Color(colorAt(colorMode, t));
     }
     return new THREE.Color('#ffffff');
   }
