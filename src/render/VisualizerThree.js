@@ -59,6 +59,8 @@ export default class VisualizerThree {
       this.scene.add(mesh);
       this.tunnelRings.push(mesh);
     }
+  }
+
   /** Load font and create 3D text mesh */
   initText() {
     const loader = new FontLoader();
