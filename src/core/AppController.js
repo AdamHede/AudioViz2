@@ -31,11 +31,15 @@ export default class AppController {
 
   bindEvents() {
     this.controls.bindLoad(file => {
-      this.player.load(file);
-      // Connect the player's source through the analyzer to the speakers
-      this.analyzer.connect(this.player.source);
-      this.controls.enable();
-      this.controls.setDownloadEnabled(true);
+      try {
+        this.player.load(file);
+        // Connect the player's source through the analyzer to the speakers
+        this.analyzer.connect(this.player.source);
+        this.controls.enable();
+        this.controls.setDownloadEnabled(true);
+      } catch (error) {
+        console.error('Failed to load audio file:', error);
+      }
     });
     this.controls.bindPlay(() => {
       this.player.play();
